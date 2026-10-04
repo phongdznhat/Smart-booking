@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch sử đặt chỗ</title>
+    <link rel="stylesheet" href="/css/user-home.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-inner">
+            <div class="brand">
+                <div class="brand-badge">SB</div>
+                <span>Smart Booking System</span>
+            </div>
+            <nav class="nav-links">
+                <a href="/user/home?name=<%= encodeURIComponent(userName) %>&userId=<%= userId %>">Trang chủ</a>
+                <a href="/my-bookings?userId=<%= userId %>&name=<%= encodeURIComponent(userName) %>">Lịch sử</a>
+                <div class="user-menu">
+                    <span class="user-name"><%= userName %></span>
+                    <a class="logout-link" href="/login" title="Đăng xuất">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main class="container" style="padding-top:32px">
+        <h2 style="margin-bottom:20px">Lịch sử đặt chỗ của bạn</h2>
+        <% if (bookings && bookings.length) { %>
+            <% bookings.forEach(function(b) { %>
+            <div class="booking-card" style="margin-bottom:16px">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+                    <h3 style="margin:0"><%= b.ResourceName %></h3>
+                    <% if (b.Status === 'Pending') { %>
+                        <span style="background:#fef3c7; color:#92400e; padding:4px 12px; border-radius:20px; font-size:13px; font-weight:600">Chờ xác nhận</span>
+                    <% } else if (b.Status === 'Confirmed') { %>
+                        <span style="background:#d1fae5; color:#065f46; padding:4px 12px; border-radius:20px; font-size:13px; font-weight:600">Đã xác nhận</span>
+                    <% } else if (b.Status === 'Cancelled') { %>
+                        <span style="background:#fee2e2; color:#991b1b; padding:4px 12px; border-radius:20px; font-size:13px; font-weight:600">Đã hủy</span>
+                    <% } else { %>
+                        <span style="background:#e0e7ff; color:#3730a3; padding:4px 12px; border-radius:20px; font-size:13px; font-weight:600">Hoàn thành</span>
+                    <% } %>
+                </div>
+                <div class="summary-list">
+                    <div><strong>Ngày:</strong> <%= new Date(b.StartTime).toLocaleDateString('vi-VN') %></div>
+                    <div><strong>Giờ:</strong> <%= new Date(b.StartTime).toLocaleTimeString('vi-VN', {hour:'2-digit',minute:'2-digit'}) %> - <%= new Date(b.EndTime).toLocaleTimeString('vi-VN', {hour:'2-digit',minute:'2-digit'}) %></div>
+                    <div><strong>Số tiền:</strong> <%= b.TotalAmount ? Number(b.TotalAmount).toLocaleString('vi-VN') : '0' %> đ</div>
+                </div>
+                <% if (b.Status === 'Pending') { %>
+                <form action="/cancel-booking" method="post" style="margin-top:12px">
+                    <input type="hidden" name="bookingId" value="<%= b.BookingID %>">
+                    <input type="hidden" name="userId" value="<%= b.UserID %>">
+                    <input type="hidden" name="userName" value="<%= userName %>">
+                    <button type="submit" class="btn btn-secondary" style="background:#fee2e2; color:#991b1b" onclick="return confirm('Bạn có chắc muốn hủy lịch này?')">Hủy lịch</button>
+                </form>
+                <% } %>
+            </div>
+            <% }) %>
+        <% } else { %>
+            <div class="booking-card" style="text-align:center; padding:40px">
+                <p style="color:#64748b">Bạn chưa có lịch đặt nào.</p>
+                <a href="/user/home?name=<%= encodeURIComponent(userName) %>&userId=<%= userId %>" class="btn btn-primary">Đặt lịch ngay</a>
+            </div>
+        <% } %>
+    </main>
+</body>
+</html>

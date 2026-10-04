@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sửa tài khoản</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 480px;
+        margin: 40px auto;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      input,
+      button {
+        padding: 10px;
+      }
+      a {
+        display: inline-block;
+        margin-bottom: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="/dashboard">← Quay lại</a>
+    <h1>Sửa tài khoản</h1>
+    <form action="/update-user" method="post">
+      <input type="hidden" name="id" value="<%= userEdit.UserID %>" />
+      <input
+        type="text"
+        name="name"
+        value="<%= userEdit.FullName || '' %>"
+        placeholder="Họ tên"
+        required
+      />
+      <input
+        type="email"
+        name="email"
+        value="<%= userEdit.Email || '' %>"
+        placeholder="Email"
+        required
+      />
+      <input
+        type="text"
+        name="phone"
+        value="<%= userEdit.Phone || '' %>"
+        placeholder="Số điện thoại"
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="Mật khẩu mới (nếu cần)"
+      />
+      <button type="submit">Lưu thay đổi</button>
+    </form>
+  </body>
+</html>
