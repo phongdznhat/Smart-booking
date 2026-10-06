@@ -17,7 +17,7 @@ const initDB = async () => {
                 UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
         `);
-        console.log("✅ Đã kiểm tra/tạo bảng Resources");
+        console.log(" Đã kiểm tra/tạo bảng Resources");
 
         // Bảng Bookings
         await connection.pool.query(`
@@ -35,12 +35,12 @@ const initDB = async () => {
                 FOREIGN KEY (ResourceID) REFERENCES Resources(ResourceID) ON DELETE CASCADE
             )
         `);
-        console.log("✅ Đã kiểm tra/tạo bảng Bookings");
+        console.log(" Đã kiểm tra/tạo bảng Bookings");
 
-        console.log("🎉 Hoàn tất khởi tạo Database!");
+        console.log(" Hoàn tất khởi tạo Database!");
         process.exit(0);
     } catch (error) {
-        console.error("❌ Lỗi khi khởi tạo Database:", error);
+        console.error("Lỗi khi khởi tạo Database:", error);
         process.exit(1);
     }
 };

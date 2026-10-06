@@ -103,7 +103,31 @@ const getAdminDashboardPage = async (req, res) => {
     }
 };
 
+const postConfirmPayment = async (req, res) => {
+    try {
+        const { bookingId } = req.body;
+        await connection.pool.query('UPDATE Bookings SET PaymentStatus = ? WHERE BookingID = ?', ['Paid', bookingId]);
+        res.redirect('/admin/bookings');
+    } catch (e) {
+        console.error(e);
+        res.status(500).send('Error');
+    }
+};
+
+const postAdminCancelBooking = async (req, res) => {
+    try {
+        const { bookingId } = req.body;
+        await updateBookingStatus(bookingId, 'Cancelled');
+        res.redirect('/admin/bookings');
+    } catch (e) {
+        console.error(e);
+        res.status(500).send('Error');
+    }
+};
+
 module.exports = {
+    postAdminCancelBooking,
+    postConfirmPayment,
     getUserBookingPage,
     postCreateBooking,
     getMyBookingsPage,

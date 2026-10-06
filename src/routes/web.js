@@ -40,7 +40,7 @@ const {
     getMyBookingsPage,
     postCancelBooking,
     getAdminBookingsPage,
-    postConfirmBooking,
+    postConfirmBooking, postConfirmPayment, postAdminCancelBooking,
     getAdminDashboardPage
 } = require('../controller/bookingController');
 
@@ -70,6 +70,8 @@ route.post('/admin/resources/delete', postDeleteResource);
 // Admin - Booking Management
 route.get('/admin/bookings', getAdminBookingsPage);
 route.post('/admin/bookings/confirm', postConfirmBooking);
+route.post('/admin/bookings/confirm-payment', postConfirmPayment);
+route.post('/admin/bookings/cancel', postAdminCancelBooking);
 
 // User - Booking Flow
 route.get('/home', getUserBookingPage);
@@ -77,5 +79,13 @@ route.get('/user/home', getUserBookingPage);
 route.post('/api/booking', postCreateBooking);
 route.get('/my-bookings', getMyBookingsPage);
 route.post('/cancel-booking', postCancelBooking);
+
+const { postCreatePayment, getVnPayReturn, getVnPayIpn } = require('../controller/paymentController');
+
+// Payment Flow
+route.post('/payment/create', postCreatePayment);
+route.get('/payment/result', getVnPayReturn);
+route.get('/payment/vnpay_return', getVnPayReturn);
+route.get('/payment/ipn', getVnPayIpn);
 
 module.exports = route;

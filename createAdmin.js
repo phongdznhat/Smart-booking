@@ -24,15 +24,15 @@ const createAdmin = async () => {
                 [userId, 'Admin', email, '0987654321', passwordHash]
             );
             
-            console.log("✅ Tạo tài khoản Admin thành công!");
+            console.log("Tạo tài khoản Admin thành công!");
             console.log("-----------------------------------------");
-            console.log("📧 Email: admin@gmail.com");
-            console.log("🔑 Mật khẩu: admin");
+            console.log("Email: admin@gmail.com");
+            console.log("Mật khẩu: admin");
             console.log("-----------------------------------------");
         }
         process.exit(0);
     } catch (error) {
-        console.error("❌ Lỗi khi tạo Admin:", error);
+        console.error("Lỗi khi tạo Admin:", error);
         process.exit(1);
     }
 };

@@ -6,6 +6,7 @@
     <title>Smart Booking System</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
@@ -48,6 +49,7 @@
         .service-card { flex: 0 0 100%; }
       }
     </style>
+  <link rel="icon" type="image/png" href="/image/favicon.png">
   </head>
   <body>
     <!-- ============ ICON SPRITE ============ -->
@@ -348,9 +350,13 @@
               </div>
 
               <button class="btn btn-primary btn-block" type="button" id="confirm-booking-btn">
-                <svg class="ico ico--sm"><use href="#i-check" /></svg>
-                Xác nhận đặt lịch
-              </button>
+        <svg class="ico ico--sm"><use href="#i-check" /></svg>
+        Xác nhận đặt lịch (Thanh toán sau)
+     </button>
+     <button class="btn btn-block" style="background:#0d9488; color:white; margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px" type="button" id="vnpay-booking-btn">
+        <svg class="ico ico--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Thanh toán VNPay
+     </button>
             </div>
 
             <!-- Cột tóm tắt -->
@@ -424,6 +430,7 @@
 
     <!-- ============ SCRIPT ============ -->
     <script>
+      // <summary> Chờ DOM tải xong
       document.addEventListener('DOMContentLoaded', () => {
         const serviceCards = Array.from(document.querySelectorAll('.service-card'));
         const timeSlots = Array.from(document.querySelectorAll('.time-slot'));
@@ -431,6 +438,7 @@
         const resultText = document.getElementById('result-text');
         const bookingDateInput = document.getElementById('booking-date');
         const confirmBtn = document.getElementById('confirm-booking-btn');
+        const vnpayBtn = document.getElementById('vnpay-booking-btn');
         const modal = document.getElementById('booking-modal');
         const modalTitle = document.getElementById('modal-title');
         const modalMessage = document.getElementById('modal-message');
@@ -444,6 +452,7 @@
         let selectedTime = null;
         let selectedEndTime = null;
 
+        // <summary> Auto select dịch vụ đầu tiên
         if (serviceCards.length) {
           const firstCard = serviceCards[0];
           selectedService = {
@@ -454,6 +463,7 @@
           updateSummary();
         }
 
+        // <summary> Xử lý click chọn dịch vụ
         serviceCards.forEach(card => {
           card.addEventListener('click', () => {
             serviceCards.forEach(c => c.classList.remove('active'));
@@ -470,6 +480,7 @@
           });
         });
 
+        // <summary> Xử lý click chọn giờ
         timeSlots.forEach(slot => {
           slot.addEventListener('click', () => {
             timeSlots.forEach(s => s.classList.remove('active'));
@@ -480,6 +491,7 @@
           });
         });
 
+        // <summary> Xử lý tìm kiếm dịch vụ
         if (searchInput) {
           searchInput.addEventListener('input', (e) => {
             const keyword = e.target.value.toLowerCase();
@@ -492,6 +504,7 @@
 
         bookingDateInput.addEventListener('change', updateSummary);
 
+        // <summary> Hàm cập nhật phần tóm tắt
         function updateSummary() {
           const fmtDate = bookingDateInput.value
             ? new Date(bookingDateInput.value).toLocaleDateString('vi-VN')
@@ -508,7 +521,16 @@
             : '0 đ';
         }
 
-        confirmBtn.addEventListener('click', async () => {
+        // <summary> Xử lý click nút xác nhận thanh toán sau
+        confirmBtn.addEventListener('click', () => handleBooking(false));
+        
+        // <summary> Xử lý click nút xác nhận thanh toán qua VNPay
+        if (vnpayBtn) {
+          vnpayBtn.addEventListener('click', () => handleBooking(true));
+        }
+
+        // <summary> Hàm gọi API chung
+        async function handleBooking(isVnpay) {
           if (!selectedService) { alert('Vui lòng chọn dịch vụ!'); return; }
           if (!selectedTime) { alert('Vui lòng chọn khung giờ!'); return; }
           if (!bookingDateInput.value) { alert('Vui lòng chọn ngày!'); return; }
@@ -530,6 +552,20 @@
             });
             const data = await res.json();
             if (res.ok) {
+              // <summary> Nếu là VNPay, redirect sang VNPay
+              if (isVnpay) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/payment/create';
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'bookingId';
+                input.value = data.bookingId;
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+                return;
+              }
               modalTitle.textContent = 'Đặt lịch thành công!';
               modalMessage.textContent = data.message || 'Lịch của bạn đã được ghi nhận.';
               modal.classList.remove('hidden');
@@ -541,7 +577,7 @@
           } catch (err) {
             alert('Lỗi kết nối server!');
           }
-        });
+        }
 
         closeModalBtn.addEventListener('click', () => {
           modal.classList.add('hidden');

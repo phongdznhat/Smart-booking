@@ -12,6 +12,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/css/create-user.css" />
+  <link rel="icon" type="image/png" href="/image/favicon.png">
   </head>
   <body>
     <!-- ============ ICON SPRITE ============ -->
@@ -273,6 +274,17 @@
                 <p class="field__hint">
                   Sử dụng mật khẩu mạnh để bảo mật tài khoản.
                 </p>
+              </div>
+
+              <!-- Vai trò -->
+              <div class="field">
+                <label for="role">Vai trò</label>
+                <div class="input-wrap">
+                  <select id="role" name="role" style="width: 100%; border: none; outline: none; background: transparent; padding: 12px; font-family: inherit; font-size: 14px; color:#0f172a">
+                    <option value="user">Khách hàng (User)</option>
+                    <option value="admin">Quản trị viên (Admin)</option>
+                  </select>
+                </div>
               </div>
 
               <!-- Nút submit -->

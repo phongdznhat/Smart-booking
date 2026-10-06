@@ -1,4 +1,4 @@
-﻿const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const {
     getallUsers,
     getUserById,
@@ -61,20 +61,20 @@ const postLogin = async (req, res) => {
         return res.redirect('/admin/dashboard');
     }
 
-    const userName = user.FullName || user.Email || 'Người dùng';
+    const userName = user.FullName || user.Email || 'Ngu?i d�ng';
     return res.redirect(`/user/home?name=${encodeURIComponent(userName)}&userId=${user.UserID}`);
 };
 
 const postRegister = async (req, res) => {
-    const { name, email, password, phone = '' } = req.body;
+    const { name, email, password, phone = '', role = 'user' } = req.body;
 
     if (!name || !email || !password) {
-        return res.status(400).send('TÃªn, email vÃ  máº­t kháº©u lÃ  báº¯t buá»™c');
+        return res.status(400).send('Tên, email và mật khẩu là bắt buộc');
     }
 
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
-        return res.status(409).send('Email Ä‘Ã£ tá»“n táº¡i');
+        return res.status(409).send('Email đã tồn tại');
     }
 
     const userId = `U-${Date.now()}`;
@@ -85,7 +85,7 @@ const postRegister = async (req, res) => {
         Email: email,
         Phone: phone,
         PasswordHash: hashedPassword,
-        Role: 'user',
+        Role: role,
         Status: 'active',
     });
 
@@ -103,7 +103,7 @@ const getAdminDashboardPage = async (req, res) => {
 };
 
 const getUserHomePage = (req, res) => {
-    const userName = req.query.name || req.query.username || 'NgÆ°á»i dÃ¹ng';
+    const userName = req.query.name || req.query.username || 'Người dùng';
     return res.render('userHome.ejs', { userName });
 };
 
@@ -112,15 +112,15 @@ const getCreatePage = (req, res) => {
 };
 
 const postCreateUser = async (req, res) => {
-    const { name, email, password, phone = '' } = req.body;
+    const { name, email, password, phone = '', role = 'user' } = req.body;
 
     if (!name || !email || !password) {
-        return res.status(400).send('TÃªn, email vÃ  máº­t kháº©u lÃ  báº¯t buá»™c');
+        return res.status(400).send('Tên, email và mật khẩu là bắt buộc');
     }
 
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
-        return res.status(409).send('Email Ä‘Ã£ tá»“n táº¡i');
+        return res.status(409).send('Email đã tồn tại');
     }
 
     const userId = `U-${Date.now()}`;
@@ -131,7 +131,7 @@ const postCreateUser = async (req, res) => {
         Email: email,
         Phone: phone,
         PasswordHash: hashedPassword,
-        Role: 'user',
+        Role: role,
         Status: 'active',
     });
 
@@ -149,12 +149,12 @@ const postUpdateUser = async (req, res) => {
 
     const existingUser = await getUserById(id);
     if (!existingUser) {
-        return res.status(404).send('KhÃ´ng tÃ¬m tháº¥y tÃ i khoáº£n');
+        return res.status(404).send('Không tìm thấy tài khoản');
     }
 
     const targetUser = await getUserByEmail(email);
     if (targetUser && targetUser.UserID !== id) {
-        return res.status(409).send('Email Ä‘Ã£ tá»“n táº¡i');
+        return res.status(409).send('Email đã tồn tại');
     }
 
     const hashedPassword = password
