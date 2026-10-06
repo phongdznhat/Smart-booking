@@ -27,7 +27,7 @@ const setup = async () => {
                 UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
         `);
-        console.log("✅ Table Users created.");
+        console.log(" Table Users created.");
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS Resources (
@@ -41,7 +41,7 @@ const setup = async () => {
                 UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
         `);
-        console.log("✅ Table Resources created.");
+        console.log("Table Resources created.");
 
         // Insert some default resources if empty
         const [resRows] = await pool.query('SELECT COUNT(*) as count FROM Resources');
@@ -50,7 +50,7 @@ const setup = async () => {
                 ('Phòng họp lớn', 'Sức chứa 20 người, có máy chiếu', 'Phòng họp', 500000, 'available'),
                 ('Dịch vụ vệ sinh', 'Dọn dẹp văn phòng theo giờ', 'Dịch vụ', 200000, 'available')
             `);
-            console.log("✅ Inserted default resources.");
+            console.log("Inserted default resources.");
         }
 
         await pool.query(`
@@ -69,7 +69,7 @@ const setup = async () => {
                 FOREIGN KEY (ResourceID) REFERENCES Resources(ResourceID) ON DELETE CASCADE
             )
         `);
-        console.log("✅ Table Bookings created.");
+        console.log(" Table Bookings created.");
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS Payments (
@@ -89,7 +89,7 @@ const setup = async () => {
                 FOREIGN KEY (UserID) REFERENCES Users(UserID)
             )
         `);
-        console.log("✅ Table Payments created.");
+        console.log(" Table Payments created.");
 
         // Insert admin
         const bcrypt = require('bcryptjs');
@@ -97,7 +97,7 @@ const setup = async () => {
         try {
             await pool.query(`INSERT INTO Users (UserID, FullName, Email, PasswordHash, Role) VALUES (?, ?, ?, ?, ?)`, 
                 ['U-ADMIN1', 'Admin', 'admin@example.com', hash, 'admin']);
-            console.log("✅ Inserted default admin: admin@example.com / 123456");
+            console.log(" Inserted default admin: admin@example.com / 123456");
         } catch(e) {
             if (e.code !== 'ER_DUP_ENTRY') throw e;
         }

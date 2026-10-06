@@ -19,7 +19,7 @@ async function start() {
     const connection = await db.createConnection();
     await connection.query('SELECT 1');
 
-    app.listen(port, hostname, () => {
+    app.listen(port, () => {
       console.log(`Example app listening on port ${port}`);
     });
   } catch (err) {
